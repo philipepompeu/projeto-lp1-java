@@ -14,7 +14,7 @@ public abstract class Veiculo {
         this.setMarca(" ");
         this.setModelo(" ");
         this.setCor(" ");
-        this.setVelocMax(0);
+        this.velocMax = 0;
         this.setQtdRodas(0);
         this.setMotor(new Motor());
     }
@@ -55,7 +55,11 @@ public abstract class Veiculo {
         return this.velocMax;
     }
 
-    public final void setVelocMax(float velocMax) {
+    public final void setVelocMax(float velocMax) throws VelocException {
+    	
+    	if (velocMax < 80 || velocMax > 110) {
+			throw new VelocException();
+		}
         this.velocMax = velocMax;
     }
 
