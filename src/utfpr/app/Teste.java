@@ -3,46 +3,30 @@ package utfpr.app;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import utfpr.app.view.TelaPrincipal;
+
 public class Teste {
 	private List<String> opcoesDeMenu;
 	private Leitura leitor;
 	private BDVeiculos repositorio;
+	private TelaPrincipal telaPrincipal;
+	
+	private static Teste app;
 	
 	public static void main(String[] args) {
 	    	
-    	Teste app = new Teste();
-    	
-        String opcaoSelecionadaPeloUsuario = "";
-		do {
-		    
-			app.exibirMenu();
-			try {
-				opcaoSelecionadaPeloUsuario = app.solicitarOpcaoAoUsuario();
-				
-				app.executaOpcaoSelecionada(opcaoSelecionadaPeloUsuario);
-			} catch (Exception e) {
-				app.mostrarMensagem(e.getMessage());
-			}
-		    
-		}while(!opcaoSelecionadaPeloUsuario.equals("9"));
+    	Teste app = Teste.getApp();
+    	app.exibirMenu();
 	
 	}
 	
-	public Teste() {
-
-		this.opcoesDeMenu = new ArrayList<String>();
-        this.opcoesDeMenu.add("1. Cadastrar veículo de Passeio");
-        this.opcoesDeMenu.add("2. Cadastrar veículo de Carga");
-        this.opcoesDeMenu.add("3. Imprimir Todos os veículos de Passeio");
-        this.opcoesDeMenu.add("4. Imprimir Todos os veículos de Carga");
-        this.opcoesDeMenu.add("5. Imprimir veículo de Passeio pela Placa");
-        this.opcoesDeMenu.add("6. Imprimir veículo de Carga pela Placa");
-        this.opcoesDeMenu.add("7. Exclui veículo de Passeio pela Placa");
-        this.opcoesDeMenu.add("8. Exclui veículo de Carga pela Placa");        
-        this.opcoesDeMenu.add("9. Sair do Sistema");
+	private Teste() {
         
-        this.leitor = new Leitura();
         this.repositorio = new BDVeiculos();
+        
+        this.telaPrincipal = new TelaPrincipal();
 	}
 	
 	private String solicitarOpcaoAoUsuario() throws Exception {
@@ -54,77 +38,35 @@ public class Teste {
         return String.valueOf(opcaoSelecionada);
     }
 	
-	public void executaOpcaoSelecionada(String opcao){
-
-        switch (opcao){
-            case "1":
-                this.cadastraVeiculo(Passeio.class);
-                break;
-            case "2":
-                this.cadastraVeiculo(Carga.class);
-                break;
-            case "3":
-            	this.imprimeListaDeVeiculos(this.repositorio.getCarrosDePasseio());
-                break;
-            case "4":
-                this.imprimeListaDeVeiculos(this.repositorio.getCarrosDeCarga());
-                break;
-            case "5":            	
-                this.executaBuscaPorPlaca(this.repositorio.getCarrosDePasseio());
-                break;
-            case "6":
-                this.executaBuscaPorPlaca(this.repositorio.getCarrosDeCarga());
-                break;
-            case "7":
-            	this.executaExclusaoPorPlaca(this.repositorio.getCarrosDePasseio());
-            	break;
-            case "8":
-            	this.executaExclusaoPorPlaca(this.repositorio.getCarrosDeCarga());
-            	break;
-            case "9":
-                this.mostrarMensagem("Saindo da aplicação.");
-                break;
-
-        }
-    }
-	
 	private boolean usuarioDesejarRepetirOperacao(){
-        boolean resultado = this.leitor.readInt("Deseja repetir a operação?(1=Sim;2=Não)") == 1;
+        boolean resultado = JOptionPane.showConfirmDialog(telaPrincipal, "Deseja repetir a operação?", "Sistema", JOptionPane.YES_NO_OPTION) == 0;       
 
         return resultado;
     }
 	
-	private void executaBuscaPorPlaca(ArrayList<Veiculo> veiculos){
-        String placa = this.solicitaPlaca();
+	public Veiculo executaBuscaPorPlaca(ArrayList<Veiculo> veiculos, String placa){
         Veiculo buscado = this.buscaPlacaEmLista(placa, veiculos);
 
         if (buscado == null) {
             this.mostrarMensagem("Veículo não encontrado");
-        }else{
-            this.mostrarMensagem("Carro encontrado, dados abaixo:");
-            this.mostrarMensagem(buscado.toString());
         }
+        
+        return buscado;
     }
 	
-	private void executaExclusaoPorPlaca(ArrayList<Veiculo> veiculos){
-		String placa = this.solicitaPlaca();
+	public boolean executaExclusaoPorPlaca(ArrayList<Veiculo> veiculos, String placa){
 		Veiculo buscado = this.buscaPlacaEmLista(placa, veiculos);
 		
 		if (buscado == null) {
 			this.mostrarMensagem("Veículo não encontrado");
+			return false;
 		}else{
 			if (this.repositorio.removeVeiculo(buscado)) {
 				this.mostrarMensagem("Veículo removido.");
 			}
+			return true;
 		}
 	}
-	
-	private void imprimeListaDeVeiculos(ArrayList<Veiculo> veiculos){
-        for(Veiculo umVeiculo : veiculos){
-            System.out.println(umVeiculo.toString());
-            System.out.println("#########################");
-        }
-    }
 	
 	private boolean verificaSePlacaExiste(String placa){
         ArrayList<Veiculo> todosOsVeiculos = new ArrayList<Veiculo>();
@@ -140,7 +82,7 @@ public class Teste {
 
     }
 	
-	public Veiculo buscaPlacaEmLista(String placa, ArrayList<Veiculo> veiculos){
+	private Veiculo buscaPlacaEmLista(String placa, ArrayList<Veiculo> veiculos){
         Veiculo resultado = null;
         for(Veiculo umVeiculo : veiculos){
             if (umVeiculo.getPlaca().equals(placa)) {
@@ -152,40 +94,40 @@ public class Teste {
         return resultado;
     }
 	
-	private String solicitaPlaca() {
-        String placa = this.leitor.readString("Informe a placa para busca:");
-        return placa;
-    }
-    
-    private void cadastraVeiculo(Class<? extends Veiculo> classe){
-
-		do {			
-			try {
-				
-				boolean isCarga = classe.equals(Carga.class);				
-				Veiculo umVeiculo = this.leitor.buildVeiculo(isCarga);
-				
-				if (this.verificaSePlacaExiste(umVeiculo.getPlaca())) {
-					throw new VeicExistException(umVeiculo.getPlaca());
-				}
-				this.repositorio.adicionaVeiculo(umVeiculo);
-	        } catch (Exception e) {
-	            this.mostrarMensagem(e.getMessage());
-	        }
-		}while (this.usuarioDesejarRepetirOperacao());
+	public void mostrarMensagem(String mensagem){
+        
+		JOptionPane.showMessageDialog(this.getTelaPrincipal(), mensagem, "Sistema", JOptionPane.INFORMATION_MESSAGE);
         
     }
 	
-	private void mostrarMensagem(String mensagem){
-        this.leitor.mostrarMensagem(mensagem);
-    }
-	
 	private void exibirMenu(){
-        for(String opcao : this.opcoesDeMenu){
-            this.mostrarMensagem(opcao);
-        }
+		
+		this.getTelaPrincipal().setVisible(true);
     }  
+	
+	public void adicionaVeiculo(Veiculo umVeiculo) {
+		this.repositorio.adicionaVeiculo(umVeiculo);
+	}
 
+	
+	public static Teste getApp() {
+		if (Teste.app == null) {
+			Teste.app = new Teste();
+		}
+		return Teste.app;
+	}
+	
+	public BDVeiculos getRepositorio() {
+		return this.repositorio;
+	}
+	
+	public void trataException(Exception e) {
+		
+		JOptionPane.showMessageDialog(this.getTelaPrincipal(), e.getMessage(), "Sistema", JOptionPane.ERROR_MESSAGE);
+	}
 
+	public TelaPrincipal getTelaPrincipal() {
+		return telaPrincipal;
+	}
 
 }

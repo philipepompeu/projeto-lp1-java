@@ -26,10 +26,11 @@ public class Motor {
         this.potencia = potencia;
     }
 
+    @Override
     public String toString(){
         String motorAsString = "";
 
-        motorAsString += "\tPotÃªncia: "+ Integer.toString(this.potencia) + "cv";
+        motorAsString += "\tPotência: "+ Integer.toString(this.potencia) + "cv";
         motorAsString += System.lineSeparator();
         motorAsString += "\tQuilometragem: "+ Integer.toString(this.qtdPist)+"km";
 

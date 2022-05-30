@@ -1,6 +1,6 @@
 package utfpr.app;
 
-public abstract class Veiculo {
+public abstract class Veiculo implements Comparable<Veiculo> {
     private String placa;
     private String marca;
     private String modelo;
@@ -81,9 +81,28 @@ public abstract class Veiculo {
         this.motor.setQtdPist(qtdPist);
         this.motor.setPotencia(potencia);
     }
-
+    
+    public int getPotencia() {
+    	return this.motor.getPotencia();
+    }
+    public int getKm() {
+    	return this.motor.getQtdPist();
+    }
     public abstract float calcVel(float velocMax);
-
+    
+    public Object[] asRowData() {
+    	Object[] rowData = {placa, marca, modelo, cor, velocMax, qtdRodas};
+    	
+    	return rowData;
+    }
+    
+    public static String[] getColumNames(){
+    	String[] columnNames = {"Placa", "Marca", "Modelo", "Cor", "Vel Max", "Qtd. Rodas"};
+    	
+    	return columnNames;
+    }
+    
+    @Override
     public String toString(){
 
         StringBuilder builder = new StringBuilder();
@@ -98,4 +117,9 @@ public abstract class Veiculo {
         return veiculoAsString;
 
     }
+
+	@Override
+	public int compareTo(Veiculo o) {
+		return this.getPlaca().compareToIgnoreCase(o.getPlaca());
+	}
 }

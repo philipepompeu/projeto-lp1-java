@@ -1,6 +1,8 @@
 package utfpr.app;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.function.Consumer;
 
 public class BDVeiculos {
 	
@@ -46,6 +48,15 @@ public class BDVeiculos {
     private boolean excluiVeiculoDeLista(Veiculo umVeiculo, ArrayList<Veiculo> lista) {
     	
     	return lista.remove(umVeiculo);
+    }
+    
+    public ArrayList<Veiculo> pegaListaOrdenadaPorPlaca(){
+    	
+    	this.carrosDeCarga.sort( (Veiculo v1, Veiculo v2) -> 
+    			 v1.getPlaca().compareToIgnoreCase(v2.getPlaca()) );
+    	
+    	this.carrosDeCarga.forEach((Veiculo carro) -> System.out.println(carro));
+    	return this.carrosDeCarga;
     }
 
 }
