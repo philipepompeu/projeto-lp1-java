@@ -4,18 +4,20 @@ import utfpr.app.Passeio;
 import utfpr.app.Teste;
 import utfpr.app.VelocException;
 import utfpr.app.view.actions.BloqueiaCamposAction;
-import utfpr.app.view.actions.SalvaCarroDePasseioAction;
+import utfpr.app.view.actions.SalvaVeiculoAction;
+import utfpr.app.view.validations.ValidaSeInteiro;
+
 import javax.swing.JTextField;
 
 
 @SuppressWarnings("serial")
-public class VeiculoDePasseioFrame extends VeiculoFrame {
+public class VeiculoDePasseioFrame extends VeiculoFrame implements CriadorDeVeiculo {
 	
 	public VeiculoDePasseioFrame() {
 		super();		
-		btnSalvar.addActionListener(new SalvaCarroDePasseioAction(this));		
+		btnSalvar.addActionListener(new SalvaVeiculoAction(this));		
 		btnSalvar.addActionListener(new BloqueiaCamposAction(this));
-		this.setTitle("Novo veículo de passeio");
+		this.setTitle("Novo veículo de passeio");		
 	}
 	
 	@Override
@@ -25,21 +27,26 @@ public class VeiculoDePasseioFrame extends VeiculoFrame {
 		
 	}
 	
-	public Passeio criaVeiculo() {
-		
-		Passeio umCarro = new Passeio();
+	@Override
+	protected void adicionaValidacoes() {
+		super.adicionaValidacoes();		
+		this.adicionaValidacao("Qtd. passageiros", new ValidaSeInteiro());
+	}
+	
+	public Passeio criaVeiculo() {		
 		
 		try {
+			Passeio umCarro = new Passeio();
 			this.carregaCamposDeVeiculo(umCarro);
 			int passageiros = Integer.valueOf(listaDeCampos.get("Qtd. passageiros").getText());
-			umCarro.setQtdPassageiros(passageiros);			
-			Teste.getApp().adicionaVeiculo(umCarro);
+			umCarro.setQtdPassageiros(passageiros);
 			
+			return umCarro;
 		} catch (VelocException e) {
 			Teste.getApp().trataException(e);
+			return null;
 		}
 		
-		return umCarro;
 		
 	}
 }

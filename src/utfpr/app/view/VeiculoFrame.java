@@ -18,6 +18,12 @@ import utfpr.app.VelocException;
 import utfpr.app.view.actions.DesbloqueiaCamposAction;
 import utfpr.app.view.actions.HideAndDisposeAction;
 import utfpr.app.view.actions.LimpaCamposAction;
+import utfpr.app.view.validations.ConfereSePlacaExiste;
+import utfpr.app.view.validations.ValidaSeFloat;
+import utfpr.app.view.validations.ValidaSeInteiro;
+import utfpr.app.view.validations.ValidaVelocMax;
+import utfpr.app.view.validations.Validacao;
+import utfpr.app.view.validations.Validador;
 
 
 
@@ -62,11 +68,18 @@ public abstract class VeiculoFrame extends JInternalFrame {
 		while(lista.hasNext()) {
 			Entry<String, JTextField> entry = (Entry)lista.next();			
 			addTextFieldComLabel(entry.getValue(), entry.getKey());
+			addValidador(entry.getValue());
 		}		
         
 		
 		this.adicionaBotoes(principal);
+		this.adicionaValidacoes();
 		
+		
+	}
+
+	private void addValidador(JTextField campo) {
+		campo.setInputVerifier(new Validador());		
 	}
 
 	private void adicionaBotoes(Container mainContainer) {
@@ -167,6 +180,21 @@ public abstract class VeiculoFrame extends JInternalFrame {
 		listaDeCampos.get("Qtd. rodas").setText(String.valueOf(umVeiculo.getQtdRodas()));
 		listaDeCampos.get("Potência(cv)").setText(String.valueOf(umVeiculo.getPotencia()));
 		listaDeCampos.get("Quilometragem").setText(String.valueOf(umVeiculo.getKm()));
+		
+	}
+	
+	protected void adicionaValidacao(String campoId, Validacao valid) {
+		Validador validador = (Validador)listaDeCampos.get(campoId).getInputVerifier();		
+		validador.adicionaValidcao(valid);
+	}
+	
+	protected void adicionaValidacoes() {
+		this.adicionaValidacao("Qtd. rodas"		, new ValidaSeInteiro());
+		this.adicionaValidacao("Potência(cv)"	, new ValidaSeInteiro());
+		this.adicionaValidacao("Quilometragem"	, new ValidaSeInteiro());
+		this.adicionaValidacao("Velocidade Máxima", new ValidaSeFloat());
+		this.adicionaValidacao("Velocidade Máxima", new ValidaVelocMax());
+		this.adicionaValidacao("Placa", new ConfereSePlacaExiste());
 		
 	}
 

@@ -175,15 +175,12 @@ public class TelaPrincipal extends JFrame {
 	}
 
 	private ListaVeiculosDePasseioFrame getListaVeiculosDePasseio() {
-		if (listaVeiculosDePasseio == null) {
-			listaVeiculosDePasseio = new ListaVeiculosDePasseioFrame();
-		}
+		listaVeiculosDePasseio = new ListaVeiculosDePasseioFrame();
 		return listaVeiculosDePasseio;
 	}
 	private ListaDeVeiculosDeCargaFrame getListaVeiculosDeCarga() {
-		if (listaVeiculosDeCarga == null) {
-			listaVeiculosDeCarga = new ListaDeVeiculosDeCargaFrame();
-		}
+		
+		listaVeiculosDeCarga = new ListaDeVeiculosDeCargaFrame();
 		return listaVeiculosDeCarga;
 	}
 

@@ -68,7 +68,7 @@ public class Teste {
 		}
 	}
 	
-	private boolean verificaSePlacaExiste(String placa){
+	public boolean verificaSePlacaExiste(String placa){
         ArrayList<Veiculo> todosOsVeiculos = new ArrayList<Veiculo>();
 
         todosOsVeiculos.addAll(this.repositorio.getCarrosDeCarga());

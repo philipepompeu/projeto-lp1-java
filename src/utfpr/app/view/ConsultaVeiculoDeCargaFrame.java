@@ -61,5 +61,9 @@ public class ConsultaVeiculoDeCargaFrame extends VeiculoDeCargaFrame {
 		listaDeCampos.get("Tara").setText(String.valueOf(novo.getTara()));
 		
 	}
+	@Override
+	protected void adicionaValidacoes() {
+		//nao faz nada
+	}
 
 }

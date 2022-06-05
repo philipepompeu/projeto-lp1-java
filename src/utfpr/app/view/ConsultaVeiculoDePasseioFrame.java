@@ -59,5 +59,11 @@ public class ConsultaVeiculoDePasseioFrame extends VeiculoDePasseioFrame {
 		Passeio novo = (Passeio) umVeiculo;
 		listaDeCampos.get("Qtd. passageiros").setText(String.valueOf(novo.getQtdPassageiros()));
 	}
+	
+	@Override
+	protected void adicionaValidacoes() {
+		//nao faz nada
+	}
+	
 
 }
